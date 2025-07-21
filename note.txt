@@ -1,1 +1,3 @@
 usar mysql
+lembrar do scrip de criar o banco
+Usar seed para o status pedido
