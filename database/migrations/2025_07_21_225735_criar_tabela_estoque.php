@@ -13,12 +13,12 @@ class CriarTabelaEstoque extends Migration
      */
     public function up()
     {
-        Schema::create('estoque', function (Blueprint $table) {
-            $table->id('estoque_id');
-            $table->unsignedBigInteger('estoque_produto');
-            $table->integer('estoque_quantidade');
+        Schema::create('estoques', function (Blueprint $table) {
+            $table->id('estoques_id');
+            $table->unsignedBigInteger('estoques_produto');
+            $table->integer('estoques_quantidade');
 
-            $table->foreign('estoque_produto')->references('produtos_id')->on('produtos')
+            $table->foreign('estoques_produto')->references('produtos_id')->on('produtos')
                 ->onDelete('NO ACTION')->onUpdate('NO ACTION');
         });
     }
@@ -30,6 +30,6 @@ class CriarTabelaEstoque extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('estoque');
+        Schema::dropIfExists('estoques');
     }
 }

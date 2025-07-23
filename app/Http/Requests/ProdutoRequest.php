@@ -57,7 +57,7 @@ class ProdutoRequest extends FormRequest
             'preco.min' => 'O preço do produto não pode ser inferior a zero.',
 
             'estoque.required' => 'É necessário informar a quantidade em estoque do produto!',
-            'estoque.integer' => 'A quantidade em estoque do produto deve ser um número válido!',
+            'estoque.integer' => 'A quantidade em estoque do produto deve ser um número inteiro válido!',
             'estoque.min' => 'A quantidade em estoque do produto não pode ser inferior a zero.',
 
             'produtoVariacao.array' => 'As variações do produto não foram informadas corretamente!',
@@ -66,7 +66,7 @@ class ProdutoRequest extends FormRequest
             'produtoVariacao.*.nome.max' => 'O nome da variação do produto deve ter no máximo 255 caracteres.',
 
             'produtoVariacao.*.estoque.required' => 'É necessário informar a quantidade em estoque para cada variação do produto!',
-            'produtoVariacao.*.estoque.integer' => 'A quantidade em estoque da variação do produto deve ser um número válido!',
+            'produtoVariacao.*.estoque.integer' => 'A quantidade em estoque da variação do produto deve ser um número inteiro válido!',
             'produtoVariacao.*.estoque.min' => 'A quantidade em estoque da variação do produto não pode ser inferior a zero.',
         ];
     }
