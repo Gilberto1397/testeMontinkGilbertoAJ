@@ -15,7 +15,7 @@ class CriarTabelaProdutos extends Migration
     {
         Schema::create('produtos', function (Blueprint $table) {
             $table->id('produtos_id');
-            $table->string('produtos_descricao');
+            $table->string('produtos_nome');
             $table->decimal('produtos_preco', 10, 2);
             $table->unsignedBigInteger('produtos_variacaode')->nullable();
 
