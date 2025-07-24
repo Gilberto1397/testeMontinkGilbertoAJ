@@ -21,4 +21,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::prefix('produtos')->group(function () {
     Route::post('', [ProdutoController::class, 'criarProduto']);
+    Route::put('', [ProdutoController::class, 'atualizarProduto']);
+    //rota para pegar todos os produtos e suas variações
 });
