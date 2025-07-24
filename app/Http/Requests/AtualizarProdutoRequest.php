@@ -8,30 +8,33 @@ use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 
 /**
+ * @property int produtoId
  * @property string nome
  * @property double preco
  * @property int estoque
  * @property array produtoVariacao
  */
-class ProdutoRequest extends FormRequest
+class AtualizarProdutoRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
 
     /**
      * Get the validation rules that apply to the request.
+     *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
+            'produtoId' => ['required', 'integer', 'exists:produtos,produtos_id'],
             'nome' => ['required', 'string', 'max:255'],
             'preco' => ['required', 'numeric', 'min:0'],
             'estoque' => ['required', 'integer', 'min:0'],
@@ -45,9 +48,13 @@ class ProdutoRequest extends FormRequest
      * Get the error messages for the defined validation rules.
      * @return array
      */
-    public function messages()
+    public function messages(): array
     {
         return [
+            'produtoId.required' => 'É necessário informar o produto a ser atualizado!',
+            'produtoId.integer' => 'O ID do produto deve ser um número inteiro válido!',
+            'produtoId.exists' => 'O produto informado não existe no sistema!',
+
             'nome.required' => 'É necessário informar um nome para o produto!',
             'nome.string' => 'O nome do produto não está em um formato adequado!',
             'nome.max' => 'O nome do produto deve ter no máximo 255 caracteres.',
@@ -75,7 +82,7 @@ class ProdutoRequest extends FormRequest
      * Prepare the data for validation.
      * @return void
      */
-    protected function prepareForValidation()
+    protected function prepareForValidation(): void
     {
         $this->merge([
             'nome' => strip_tags($this->nome),
@@ -86,7 +93,7 @@ class ProdutoRequest extends FormRequest
      * @param  Validator  $validator
      * @throws ValidationException
      */
-    public function failedValidation(Validator $validator)
+    public function failedValidation(Validator $validator): void
     {
         $data = [
             'messages' => $validator->errors()->getMessages(),

@@ -6,15 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property int $estoque_id
- * @property int $estoque_produto
- * @property int $estoque_quantidade
+ * @property int $estoques_id
+ * @property int $estoques_produto
+ * @property int $estoques_quantidade
  */
 class Estoque extends Model
 {
     use HasFactory;
 
-    protected $table = 'estoque';
-    protected $primaryKey = 'estoque_id';
+    protected $table = 'estoques';
+    protected $primaryKey = 'estoques_id';
     public $timestamps = false;
 }
