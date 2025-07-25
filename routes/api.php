@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CepController;
+use App\Http\Controllers\CarrinhoController;
 use App\Http\Controllers\ProdutoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,4 +27,8 @@ Route::prefix('produtos')->group(function () {
     Route::post('', [ProdutoController::class, 'criarProduto']);
     Route::put('', [ProdutoController::class, 'atualizarProduto']);
     //rota para pegar todos os produtos e suas variações
+});
+
+Route::prefix('carrinho')->group(function () {
+    Route::post('', [CarrinhoController::class, 'adicionarAoCarrinho']);
 });
