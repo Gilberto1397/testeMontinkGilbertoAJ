@@ -36,4 +36,5 @@ Route::prefix('carrinho')->group(function () {
 
 Route::prefix('pedidos')->group(function () {
     Route::get('valores-pedido', [PedidoController::class, 'getValoresPedido']);
+    Route::post('', [PedidoController::class, 'criarPedido']);
 });

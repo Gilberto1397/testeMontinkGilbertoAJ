@@ -16,7 +16,10 @@ class GetValoresPedidoService
      */
     public function getValoresPedido(): OrganizaRespostaRequisicao
     {
-        return new OrganizaRespostaRequisicao(200, '', $this->calculaTotaisPedido());
+        $totais = $this->calculaTotaisPedido();
+        session(['totalPedido' => $totais['valorTotalPedido']]);
+
+        return new OrganizaRespostaRequisicao(200, '', $totais);
     }
 
     /**
@@ -74,8 +77,9 @@ class GetValoresPedidoService
             $totalProdutos += $valorQuantidade['quantidade'] * $valorQuantidade['valorUnitario'];
         }
         return [
-            'totalPedido' => $totalProdutos,
-            'frete' => $this->calculaFrete($totalProdutos)
+            'valorTotalProdutos' => $totalProdutos,
+            'frete' => $this->calculaFrete($totalProdutos),
+            'valorTotalPedido' => $totalProdutos + $this->calculaFrete($totalProdutos),
         ];
     }
 
