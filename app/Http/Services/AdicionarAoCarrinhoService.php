@@ -7,11 +7,16 @@ use App\Http\Requests\AdicionarNoCarrinhoRequest;
 
 class AdicionarAoCarrinhoService
 {
-    public function adicionarAoCarrinho(AdicionarNoCarrinhoRequest $request)
+    /**
+     * @param AdicionarNoCarrinhoRequest $request
+     * @return OrganizaRespostaRequisicao
+     */
+    public function adicionarAoCarrinho(AdicionarNoCarrinhoRequest $request): OrganizaRespostaRequisicao
     {
         $produtoAdicionado = [
             'carrinho' => [
                 "produto{$request->produtoId}" => [
+                    'produtoId' => $request->produtoId,
                     'quantidade' => $request->quantidade,
                     'nomeProduto' => $request->nomeProduto,
                 ]

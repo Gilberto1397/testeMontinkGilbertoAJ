@@ -64,7 +64,7 @@ class ProdutoRepositoryEloquent implements ProdutoRepository
      */
     public function atualizarProduto(AtualizarProdutoRequest $request): bool
     {
-        $produto = $this->getProdutoById($request->produtoId);
+        $produto = $this->getProdutosByIds([$request->produtoId]);
         $produto->produtos_nome = $request->nome;
         $produto->produtos_preco = $request->preco;
 
@@ -94,13 +94,17 @@ class ProdutoRepositoryEloquent implements ProdutoRepository
     }
 
     /**
-     * Recupera um produto pelo ID.
-     * @param int $id
-     * @return Produto|null
+     * Recupera produtos por IDs.
+     * @param array $ids
+     * @return array
      */
-    public function getProdutoById(int $id): ?Produto
+    public function getProdutosByIds(array $ids): array
     {
-        return Produto::find($id);
+        if (count($ids) === 1) {
+            return Produto::where('produtos_id', $ids[0])->get()->all();
+        }
+
+        return Produto::whereIn('produtos_id', $ids)->get()->all();
     }
 
     /**
