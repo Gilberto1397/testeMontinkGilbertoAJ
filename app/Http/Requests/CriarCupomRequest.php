@@ -59,7 +59,7 @@ class CriarCupomRequest extends FormRequest
             'valorDesconto.min' => "O valor de desconto deve ser maior ou igual a 1!",
 
             'dataExpiracao.required' => "Necessário informar a data de expiração do cupom!",
-            'dataExpiracao.date_format' => "A data de expiração deve estar no formato d/m/Y!",
+            'dataExpiracao.date_format' => "A data de expiração deve estar no formato dia/mês/ano!",
         ];
     }
 
@@ -80,7 +80,7 @@ class CriarCupomRequest extends FormRequest
     public function failedValidation(Validator $validator)
     {
         $data = [
-            'messages' => $validator->errors()->getMessages(),
+            'mensagens' => $validator->errors()->getMessages(),
             'error' => true
         ];
 

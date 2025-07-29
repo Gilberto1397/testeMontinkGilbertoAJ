@@ -15,10 +15,10 @@ class CriarTabelaCupons extends Migration
     {
         Schema::create('cupons', function (Blueprint $table) {
             $table->id('cupons_id');
-            $table->string('cupons_codigo')->unique();
+            $table->string('cupons_codigo');
             $table->decimal('cupons_valorminimo', 10, 2);
             $table->decimal('cupons_valordesconto', 10, 2);
-            $table->dateTime('cupons_expiracao')->nullable();
+            $table->date('cupons_expiracao');
         });
     }
 
