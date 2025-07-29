@@ -17,6 +17,7 @@ class CriarTabelaCupons extends Migration
             $table->id('cupons_id');
             $table->string('cupons_codigo')->unique();
             $table->decimal('cupons_valorminimo', 10, 2);
+            $table->decimal('cupons_valordesconto', 10, 2);
             $table->dateTime('cupons_expiracao')->nullable();
         });
     }

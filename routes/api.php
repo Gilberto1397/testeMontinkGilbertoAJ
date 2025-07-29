@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CepController;
 use App\Http\Controllers\CarrinhoController;
+use App\Http\Controllers\CupomController;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\ProdutoController;
 use Illuminate\Http\Request;
@@ -37,4 +38,8 @@ Route::prefix('carrinho')->group(function () {
 Route::prefix('pedidos')->group(function () {
     Route::get('valores-pedido', [PedidoController::class, 'getValoresPedido']);
     Route::post('', [PedidoController::class, 'criarPedido']);
+});
+
+Route::prefix('cupons')->group(function () {
+    Route::post('', [CupomController::class, 'criarCupom']);
 });
