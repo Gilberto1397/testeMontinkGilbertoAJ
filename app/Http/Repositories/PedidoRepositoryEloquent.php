@@ -8,6 +8,7 @@ use App\Models\Pedido;
 class PedidoRepositoryEloquent implements PedidoRepository
 {
     /**
+     * Adiciona um novo pedido ao banco de dados.
      * @param float $valorPedido
      * @return bool
      */
