@@ -19,18 +19,6 @@
         .form-label {
             font-weight: 500;
         }
-
-        /* Toast personalizado */
-        .toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-        }
-
-        .toast {
-            min-width: 300px;
-        }
     </style>
 </head>
 
