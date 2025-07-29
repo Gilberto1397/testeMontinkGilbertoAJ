@@ -31,11 +31,11 @@ interface ProdutoRepository
     public function atualizarProduto(AtualizarProdutoRequest $request): bool;
 
     /**
-     * Recupera um produto pelo ID.
-     * @param int $id
-     * @return Produto|null
+     * Recupera produtos por IDs.
+     * @param array $ids
+     * @return array
      */
-    public function getProdutoById(int $id): ?Produto;
+    public function getProdutosByIds(array $ids): array;
 
     /**
      * @param array $dadosProduto
