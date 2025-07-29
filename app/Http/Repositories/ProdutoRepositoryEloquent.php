@@ -150,4 +150,13 @@ class ProdutoRepositoryEloquent implements ProdutoRepository
             }
         }
     }
+
+    /**
+     * Lista todos os produtos do banco de dados.
+     * @return array|Produto[]
+     */
+    public function listarTodosProdutos(): array
+    {
+        return Produto::all()->all();
+    }
 }

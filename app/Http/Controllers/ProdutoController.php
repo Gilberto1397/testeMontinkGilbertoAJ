@@ -7,6 +7,7 @@ use App\Http\Requests\AtualizarProdutoRequest;
 use App\Http\Requests\CriarProdutoRequest;
 use App\Http\Services\AtualizarProdutoService;
 use App\Http\Services\CriarProdutoService;
+use App\Http\Services\listarTodosProdutosService;
 use DomainException;
 use Illuminate\Http\JsonResponse;
 use PDOException;
@@ -21,7 +22,7 @@ class ProdutoController extends Controller
                 'mensagem' => $resposta->getMensagem(),
                 'erro' => $resposta->getErro()
             ], $resposta->getStatusCode());
-        } catch (PDOException | DomainException $exception) {
+        } catch (PDOException|DomainException $exception) {
             return response()->json(['mensagem' => $exception->getMessage(), 'erro' => true], 500);
         }
     }
@@ -34,8 +35,19 @@ class ProdutoController extends Controller
                 'mensagem' => $resposta->getMensagem(),
                 'erro' => $resposta->getErro()
             ], $resposta->getStatusCode());
-        } catch (PDOException | DomainException $exception) {
+        } catch (PDOException|DomainException $exception) {
             return response()->json(['mensagem' => $exception->getMessage(), 'erro' => true], 500);
         }
+    }
+
+    public function listarProdutos(): JsonResponse
+    {
+        $resposta = (new listarTodosProdutosService())->listarTodosProdutos(new ProdutoRepositoryEloquent());
+        return response()
+            ->json([
+                'erro' => $resposta->getErro(),
+                'mensagem' => $resposta->getMensagem(),
+                'data' => $resposta->getData()
+            ], $resposta->getStatusCode());
     }
 }

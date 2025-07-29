@@ -44,4 +44,10 @@ interface ProdutoRepository
      * @throws DomainException
      */
     public function salvarVariacoesProduto(array $dadosProduto, int $produtoOrigem): void;
+
+    /**
+     * Lista todos os produtos do banco de dados.
+     * @return array|Produto[]
+     */
+    public function listarTodosProdutos(): array;
 }

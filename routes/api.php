@@ -27,7 +27,7 @@ Route::get('/cep/{cep?}', [CepController::class, 'buscarCep']);
 Route::prefix('produtos')->group(function () {
     Route::post('', [ProdutoController::class, 'criarProduto']);
     Route::put('', [ProdutoController::class, 'atualizarProduto']);
-    //rota para pegar todos os produtos e suas variações
+    Route::get('', [ProdutoController::class, 'listarProdutos']);
 });
 
 Route::prefix('carrinho')->group(function () {
