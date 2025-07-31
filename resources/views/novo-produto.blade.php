@@ -38,6 +38,7 @@
                                     <tr>
                                         <th scope="col">Nome do Produto</th>
                                         <th scope="col">Preço</th>
+                                        <th scope="col">Ações</th>
                                     </tr>
                                     </thead>
                                     <tbody id="produtosTableBody">
@@ -60,6 +61,8 @@
                     </header>
                     <div class="card-body p-4">
                         <form id="produtoForm">
+                            <input id="produtoId" type="hidden">
+
                             <fieldset>
                                 <legend class="visually-hidden">Informações do Produto</legend>
 
@@ -101,9 +104,13 @@
                             </fieldset>
 
                             <div class="d-grid gap-2">
-                                <button onclick="criarProduto()" type="button" id="btnCriarProduto"
+                                <button onclick="criarAtualizarProduto()" type="button" id="btnCriarProduto"
                                         class="btn btn-primary btn-lg">
                                     <i class="fas fa-save me-2"></i>Criar Produto
+                                </button>
+                                <button onclick="cancelarEdicao()" type="button" id="btnCancelarEdicao"
+                                        class="btn btn-secondary btn-lg d-none">
+                                    <i class="fas fa-times me-2"></i>Cancelar Edição
                                 </button>
                             </div>
                         </form>
@@ -151,6 +158,11 @@
                 row.innerHTML = `
                     <td>${produto.nome}</td>
                     <td>R$ ${parseFloat(produto.preco).toFixed(2).replace('.', ',')}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-warning" onclick="editarProduto(${produto.id}, '${produto.nome}', '${produto.preco}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </td>
                 `;
                 tbody.appendChild(row);
             });
@@ -285,6 +297,65 @@
         }
     }
 
+    async function atualizarProduto() {
+        try {
+            limparMensagensErro();
+
+            const nome = document.querySelector('#nome').value;
+            const preco = document.querySelector('#preco').value;
+            const estoque = document.querySelector('#estoque').value;
+            const produtoId = document.querySelector('#produtoId').value;
+
+            // Coletar variações
+            const produtoVariacao = [];
+            document.querySelectorAll('.variacao-item').forEach(item => {
+                const id = item.id.split('-')[1];
+                const nomeVariacao = document.querySelector(`#variacao-nome-${id}`).value;
+                const estoqueVariacao = document.querySelector(`#variacao-estoque-${id}`).value;
+
+                produtoVariacao.push({
+                    nome: nomeVariacao,
+                    estoque: estoqueVariacao
+                });
+            });
+
+            const dados = {
+                nome,
+                preco,
+                estoque,
+                produtoVariacao,
+                produtoId
+            };
+
+            const response = await fetch('http://127.0.0.1:8000/api/v1/produtos', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dados)
+            });
+
+            const resultado = await response.json();
+
+            console.log(resultado)
+
+            if (resultado.erro) {
+                if (resultado.mensagens) {
+                    exibirErroInput(resultado.mensagens);
+                    return;
+                }
+            }
+
+            alert('Produto atualizado com sucesso!');
+            limpaFormulario();
+            // Recarregar a lista de produtos
+            await carregarProdutos();
+        } catch (erro) {
+            console.log(erro)
+            alert('Erro ao atualizar produto!');
+        }
+    }
+
     function exibirErroInput(mensagensDeErro) {
         for (const campoMensagem in mensagensDeErro) {
             const mensagemDeErro = mensagensDeErro[campoMensagem][0];
@@ -311,6 +382,54 @@
         document.getElementById('produtoForm').reset();
         document.querySelector('#variacoesContainer').innerHTML = '';
         contadorVariacoes = 0;
+
+        // Ocultar botão de cancelar edição
+        document.getElementById('btnCancelarEdicao').classList.add('d-none');
+
+        // Restaurar título do formulário
+        document.querySelector('.card-header.bg-primary h1').innerHTML = '<i class="fas fa-box me-2"></i>Criar Novo Produto';
+
+        // Restaurar texto do botão para "Criar Produto"
+        document.querySelector('#btnCriarProduto').innerHTML = '<i class="fas fa-save me-2"></i>Criar Produto';
+
+        // Remover ID do produto sendo editado
+        document.querySelector('#produtoForm').removeAttribute('data-id');
+    }
+
+    // Função para editar produto
+    async function editarProduto(id, nome, preco) {
+        // Preencher o formulário com os dados do produto
+        document.querySelector('#nome').value = nome;
+        document.querySelector('#preco').value = preco;
+
+        // Atualizar título do formulário
+        document.querySelector('.card-header.bg-primary h1').innerHTML = '<i class="fas fa-box me-2"></i>Editar Produto';
+
+        // Atualizar texto do botão para "Salvar Alterações"
+        document.querySelector('#btnCriarProduto').innerHTML = '<i class="fas fa-save me-2"></i>Salvar Alterações';
+
+        // Exibir botão de cancelar edição
+        document.getElementById('btnCancelarEdicao').classList.remove('d-none');
+
+        // Armazenar ID do produto sendo editado
+        document.querySelector('#produtoId').value = id;
+    }
+
+    // Função para cancelar edição
+    function cancelarEdicao() {
+        if (confirm('Tem certeza que deseja cancelar a edição?')) {
+            limpaFormulario();
+        }
+    }
+
+    function criarAtualizarProduto() {
+        const produtoId = document.querySelector('#produtoId').value;
+
+        if (produtoId) {
+            atualizarProduto();
+        } else {
+            criarProduto();
+        }
     }
 </script>
 </body>
