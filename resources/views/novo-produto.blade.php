@@ -243,9 +243,9 @@
         <div class="d-flex justify-content-between mb-3">
             <strong>Total: <span id="totalCarrinho">R$ 0,00</span></strong>
         </div>
-        <button class="btn btn-success w-100">
+        <a {{route('novo-pedido')}} class="btn btn-success w-100">
             <i class="fas fa-credit-card me-2"></i>Finalizar Compra
-        </button>
+        </a>
     </div>
 </div>
 

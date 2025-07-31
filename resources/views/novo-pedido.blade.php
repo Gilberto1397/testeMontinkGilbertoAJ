@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap 5 CSS -->
+    <link href="{{asset('css/app.css')}}" rel="stylesheet">
+    <!-- Font Awesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <title>Novo Pedido</title>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="mb-0"><i class="fas fa-map-marker-alt me-2"></i>Endereço de Entrega</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="enderecoForm">
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="cep" class="form-label">CEP <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="cep" name="cep" placeholder="00000-000" maxlength="9" required>
+                                        <button type="button" class="btn btn-outline-secondary" id="btnBuscarCep">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                    <div class="invalid-feedback" id="cepError"></div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-8 mb-3">
+                                    <label for="logradouro" class="form-label">Logradouro <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="logradouro" name="logradouro" required>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="numero" class="form-label">Número <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="numero" name="numero" required>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="bairro" class="form-label">Bairro <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="bairro" name="bairro" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="complemento" class="form-label">Complemento</label>
+                                    <input type="text" class="form-control" id="complemento" name="complemento" placeholder="Apartamento, bloco, etc.">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="cidade" class="form-label">Cidade <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="cidade" name="cidade" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="uf" class="form-label">UF <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="uf" name="uf" maxlength="2" required>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Modal -->
+    <div class="modal fade" id="loadingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center py-4">
+                    <div class="spinner-border text-primary mb-3" role="status">
+                        <span class="visually-hidden">Carregando...</span>
+                    </div>
+                    <p class="mb-0">Buscando CEP...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cepInput = document.getElementById('cep');
+            const btnBuscarCep = document.getElementById('btnBuscarCep');
+            const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+
+            // Máscara para CEP
+            cepInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length <= 8) {
+                    value = value.replace(/(\d{5})(\d)/, '$1-$2');
+                    e.target.value = value;
+                }
+            });
+
+            // Buscar CEP automaticamente quando o campo perde o foco
+            cepInput.addEventListener('blur', function() {
+                const cep = this.value.replace(/\D/g, '');
+                if (cep.length === 8) {
+                    buscarCep(cep);
+                }
+            });
+
+            // Buscar CEP ao clicar no botão
+            btnBuscarCep.addEventListener('click', function() {
+                const cep = cepInput.value.replace(/\D/g, '');
+                if (cep.length === 8) {
+                    buscarCep(cep);
+                } else {
+                    mostrarErro('CEP deve conter 8 dígitos');
+                }
+            });
+
+            function buscarCep(cep) {
+                loadingModal.show();
+                limparErros();
+
+                fetch(`/api/v1/cep/${cep}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        loadingModal.hide();
+
+                        if (data.erro) {
+                            mostrarErro(data.mensagem || 'CEP não encontrado');
+                            return;
+                        }
+
+                        if (data.data && !data.data.erro) {
+                            preencherEndereco(data.data);
+                        } else {
+                            mostrarErro('CEP não encontrado');
+                        }
+                    })
+                    .catch(error => {
+                        loadingModal.hide();
+                        console.error('Erro:', error);
+                        mostrarErro('Erro ao buscar CEP. Tente novamente.');
+                    });
+            }
+
+            function preencherEndereco(endereco) {
+                document.getElementById('logradouro').value = endereco.logradouro || '';
+                document.getElementById('bairro').value = endereco.bairro || '';
+                document.getElementById('cidade').value = endereco.localidade || '';
+                document.getElementById('uf').value = endereco.uf || '';
+
+                // Foca no campo número após preencher
+                document.getElementById('numero').focus();
+            }
+
+            function mostrarErro(mensagem) {
+                const cepError = document.getElementById('cepError');
+                const cepInput = document.getElementById('cep');
+
+                cepError.textContent = mensagem;
+                cepInput.classList.add('is-invalid');
+                cepError.style.display = 'block';
+            }
+
+            function limparErros() {
+                const cepError = document.getElementById('cepError');
+                const cepInput = document.getElementById('cep');
+
+                cepError.textContent = '';
+                cepInput.classList.remove('is-invalid');
+                cepError.style.display = 'none';
+            }
+
+            // Formulário submit
+            document.getElementById('enderecoForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // Aqui você pode adicionar a lógica para processar o formulário
+                alert('Endereço confirmado! Aqui você pode adicionar a lógica para processar o pedido.');
+            });
+        });
+    </script>
+
+    <style>
+        .spinner-border {
+            width: 2rem;
+            height: 2rem;
+        }
+
+        .card {
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            border: 1px solid rgba(0, 0, 0, 0.125);
+        }
+
+        .card-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+        }
+
+        .form-label {
+            font-weight: 500;
+        }
+
+        .text-danger {
+            color: #dc3545 !important;
+        }
+
+        .btn {
+            border-radius: 0.375rem;
+        }
+    </style>
+</body>
+</html>
