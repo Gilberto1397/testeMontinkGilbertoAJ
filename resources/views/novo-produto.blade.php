@@ -25,6 +25,35 @@
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
+                <!-- Seção de listagem de produtos -->
+                <article class="card border-0 rounded-3 mb-4">
+                    <header class="card-header bg-success text-white">
+                        <h2 class="h4 mb-0"><i class="fas fa-list me-2"></i>Produtos Cadastrados</h2>
+                    </header>
+                    <div class="card-body p-4">
+                        <div id="produtosContainer" class="d-none">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead class="table-dark">
+                                    <tr>
+                                        <th scope="col">Nome do Produto</th>
+                                        <th scope="col">Preço</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="produtosTableBody">
+                                    <!-- Os produtos serão inseridos aqui -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="semProdutos" class="text-center py-4 d-none">
+                            <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">Nenhum produto cadastrado ainda.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Formulário de criação de produto -->
                 <article class="card border-0 rounded-3">
                     <header class="card-header bg-primary text-white">
                         <h1 class="h3 mb-0"><i class="fas fa-box me-2"></i>Criar Novo Produto</h1>
@@ -59,7 +88,8 @@
                                 <div class="mb-4">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <h3 class="h5">Variações do Produto</h3>
-                                        <button type="button" id="btnAdicionarVariacao" class="btn btn-sm btn-outline-primary">
+                                        <button type="button" id="btnAdicionarVariacao"
+                                                class="btn btn-sm btn-outline-primary">
                                             <i class="fas fa-plus me-1"></i>Adicionar Variação
                                         </button>
                                     </div>
@@ -71,7 +101,8 @@
                             </fieldset>
 
                             <div class="d-grid gap-2">
-                                <button onclick="criarProduto()" type="button" id="btnCriarProduto" class="btn btn-primary btn-lg">
+                                <button onclick="criarProduto()" type="button" id="btnCriarProduto"
+                                        class="btn btn-primary btn-lg">
                                     <i class="fas fa-save me-2"></i>Criar Produto
                                 </button>
                             </div>
@@ -89,9 +120,52 @@
     // Contador para IDs únicos de variações
     let contadorVariacoes = 0;
 
+    // Carregar produtos ao carregar a página
+    document.addEventListener('DOMContentLoaded', function () {
+        carregarProdutos();
+    });
+
+    // Função para carregar produtos
+    async function carregarProdutos() {
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/v1/produtos', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            const resultado = await response.json();
+
+            if (resultado.erro || !resultado.data || resultado.data.length === 0) {
+                document.getElementById('semProdutos').classList.remove('d-none');
+                return;
+            }
+
+            const produtos = resultado.data;
+            const tbody = document.getElementById('produtosTableBody');
+            tbody.innerHTML = '';
+
+            produtos.forEach(produto => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${produto.nome}</td>
+                    <td>R$ ${parseFloat(produto.preco).toFixed(2).replace('.', ',')}</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            document.getElementById('produtosContainer').classList.remove('d-none');
+            document.getElementById('semProdutos').classList.add('d-none');
+        } catch (erro) {
+            console.error('Erro ao carregar produtos:', erro);
+            document.getElementById('semProdutos').classList.remove('d-none');
+        }
+    }
+
     // Validação para campos numéricos
     document.querySelectorAll('#preco, #estoque').forEach(campo => {
-        campo.addEventListener('keypress', function(e) {
+        campo.addEventListener('keypress', function (e) {
             const char = String.fromCharCode(e.which);
             // Para o campo preço, permite números e pontos
             if (this.id === 'preco') {
@@ -109,7 +183,7 @@
     });
 
     // Adicionar variação
-    document.querySelector('#btnAdicionarVariacao').addEventListener('click', function() {
+    document.querySelector('#btnAdicionarVariacao').addEventListener('click', function () {
         adicionarVariacao();
     });
 
@@ -142,7 +216,7 @@
         document.querySelector('#variacoesContainer').insertAdjacentHTML('beforeend', variacaoHTML);
 
         // Adicionar validação para o novo campo de estoque
-        document.querySelector(`#variacao-estoque-${id}`).addEventListener('keypress', function(e) {
+        document.querySelector(`#variacao-estoque-${id}`).addEventListener('keypress', function (e) {
             const char = String.fromCharCode(e.which);
             if (!/[0-9]/.test(char)) {
                 e.preventDefault();
@@ -150,7 +224,7 @@
         });
 
         // Adicionar listener para o botão de remover
-        document.querySelector(`#variacao-${id} .btn-remover-variacao`).addEventListener('click', function() {
+        document.querySelector(`#variacao-${id} .btn-remover-variacao`).addEventListener('click', function () {
             const idVariacao = this.getAttribute('data-id');
             document.querySelector(`#variacao-${idVariacao}`).remove();
         });
@@ -203,6 +277,8 @@
 
             alert('Produto criado com sucesso!');
             limpaFormulario();
+            // Recarregar a lista de produtos
+            await carregarProdutos();
         } catch (erro) {
             console.log(erro)
             alert('Erro ao criar produto!');
