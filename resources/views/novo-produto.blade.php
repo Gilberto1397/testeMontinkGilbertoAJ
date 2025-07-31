@@ -8,7 +8,7 @@
     <link href="{{asset('css/app.css')}}" rel="stylesheet">
     <!-- Font Awesome para ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="{{asset('js/app.js')}}"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         .card {
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -16,6 +16,63 @@
 
         .form-label {
             font-weight: 500;
+        }
+
+        /* Estilos para o carrinho lateral */
+        .carrinho-lateral {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: white;
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+            z-index: 1050;
+            overflow-y: auto;
+        }
+
+        .carrinho-lateral.aberto {
+            right: 0;
+        }
+
+        .carrinho-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1040;
+        }
+
+        .carrinho-overlay.ativo {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .btn-carrinho-flutuante {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1030;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+        }
+
+        .badge-carrinho {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            min-width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 12px;
+            line-height: 20px;
         }
     </style>
 </head>
@@ -121,6 +178,84 @@
     </div>
 </main>
 
+<!-- Modal de confirmação para adicionar ao carrinho -->
+<div class="modal fade" id="modalCarrinho" tabindex="-1" aria-labelledby="modalCarrinhoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalCarrinhoLabel">
+                    <i class="fas fa-cart-plus me-2"></i>Adicionar ao Carrinho
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-3">
+                    <h6 id="nomeProdutoModal" class="mb-1"></h6>
+                    <span id="precoProdutoModal" class="text-success fw-bold"></span>
+                </div>
+                <div class="mb-3">
+                    <label for="quantidadeCarrinho" class="form-label">Quantidade</label>
+                    <div class="input-group">
+                        <button class="btn btn-outline-secondary" type="button" onclick="alterarQuantidade(-1)">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <input type="number" class="form-control text-center" id="quantidadeCarrinho" value="1" min="1">
+                        <button class="btn btn-outline-secondary" type="button" onclick="alterarQuantidade(1)">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div id="erroCarrinho" class="text-danger fw-bold d-none"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" onclick="confirmarAdicaoCarrinho()">
+                    <i class="fas fa-cart-plus me-2"></i>Adicionar ao Carrinho
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Overlay do carrinho -->
+<div class="carrinho-overlay" id="carrinhoOverlay" onclick="fecharCarrinho()"></div>
+
+<!-- Carrinho lateral -->
+<div class="carrinho-lateral" id="carrinhoLateral">
+    <div class="p-3 border-bottom">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="fas fa-shopping-cart me-2"></i>Meu Carrinho</h5>
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="fecharCarrinho()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+    <div class="p-3" id="conteudoCarrinho">
+        <div class="text-center py-4" id="carrinhoVazio">
+            <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+            <p class="text-muted">Seu carrinho está vazio</p>
+        </div>
+        <div id="itensCarrinho" class="d-none">
+            <!-- Os itens do carrinho serão inseridos aqui -->
+        </div>
+    </div>
+    <div class="p-3 border-top" id="rodapeCarrinho" >
+        <div class="d-flex justify-content-between mb-3">
+            <strong>Total: <span id="totalCarrinho">R$ 0,00</span></strong>
+        </div>
+        <button class="btn btn-success w-100">
+            <i class="fas fa-credit-card me-2"></i>Finalizar Compra
+        </button>
+    </div>
+</div>
+
+<!-- Botão flutuante do carrinho -->
+<button class="btn btn-success btn-carrinho-flutuante" onclick="abrirCarrinho()" style="display: none;"
+        id="btnCarrinhoFlutuante">
+    <i class="fas fa-shopping-cart"></i>
+    <span class="badge bg-danger badge-carrinho" id="badgeCarrinho">0</span>
+</button>
+
 <script>
     "use strict";
 
@@ -159,8 +294,11 @@
                     <td>${produto.nome}</td>
                     <td>R$ ${parseFloat(produto.preco).toFixed(2).replace('.', ',')}</td>
                     <td>
-                        <button class="btn btn-sm btn-outline-warning" onclick="editarProduto(${produto.id}, '${produto.nome}', '${produto.preco}')">
+                        <button class="btn btn-sm btn-outline-warning me-2" onclick="editarProduto(${produto.id}, '${produto.nome}', '${produto.preco}')">
                             <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-success" onclick="abrirModalCarrinho(${produto.id}, '${produto.nome}', '${produto.preco}')">
+                            <i class="fas fa-cart-plus"></i>
                         </button>
                     </td>
                 `;
@@ -170,7 +308,7 @@
             document.getElementById('produtosContainer').classList.remove('d-none');
             document.getElementById('semProdutos').classList.add('d-none');
         } catch (erro) {
-            console.error('Erro ao carregar produtos:', erro);
+            alert('Erro ao carregar produtos!');
             document.getElementById('semProdutos').classList.remove('d-none');
         }
     }
@@ -292,7 +430,6 @@
             // Recarregar a lista de produtos
             await carregarProdutos();
         } catch (erro) {
-            console.log(erro)
             alert('Erro ao criar produto!');
         }
     }
@@ -337,8 +474,6 @@
 
             const resultado = await response.json();
 
-            console.log(resultado)
-
             if (resultado.erro) {
                 if (resultado.mensagens) {
                     exibirErroInput(resultado.mensagens);
@@ -351,7 +486,6 @@
             // Recarregar a lista de produtos
             await carregarProdutos();
         } catch (erro) {
-            console.log(erro)
             alert('Erro ao atualizar produto!');
         }
     }
@@ -429,6 +563,167 @@
             atualizarProduto();
         } else {
             criarProduto();
+        }
+    }
+
+    // Variáveis globais para o carrinho
+    let carrinho = [];
+    let quantidadeCarrinho = 1;
+
+    // Função para abrir o carrinho
+    function abrirCarrinho() {
+        document.getElementById('carrinhoLateral').classList.add('aberto');
+        document.getElementById('carrinhoOverlay').classList.add('ativo');
+
+        // Atualizar visualização do carrinho
+        atualizarCarrinho();
+    }
+
+    // Função para fechar o carrinho
+    function fecharCarrinho() {
+        document.getElementById('carrinhoLateral').classList.remove('aberto');
+        document.getElementById('carrinhoOverlay').classList.remove('ativo');
+    }
+
+    // Função para abrir o modal do carrinho
+    function abrirModalCarrinho(id, nome, preco) {
+        document.getElementById('nomeProdutoModal').textContent = nome;
+        document.getElementById('precoProdutoModal').textContent = `R$ ${parseFloat(preco).toFixed(2).replace('.', ',')}`;
+        document.getElementById('quantidadeCarrinho').value = 1;
+        document.getElementById('erroCarrinho').classList.add('d-none');
+
+        // Armazenar informações do produto no modal
+        window.produtoCarrinho = {
+            id,
+            nome,
+            preco: parseFloat(preco)
+        };
+
+        // Exibir modal
+        const modal = new bootstrap.Modal(document.getElementById('modalCarrinho'));
+        modal.show();
+    }
+
+    // Função para alterar a quantidade no modal do carrinho
+    function alterarQuantidade(delta) {
+        const quantidadeInput = document.getElementById('quantidadeCarrinho');
+        let novaQuantidade = parseInt(quantidadeInput.value) + delta;
+
+        // Garantir que a quantidade mínima seja 1
+        if (novaQuantidade < 1) {
+            novaQuantidade = 1;
+        }
+
+        quantidadeInput.value = novaQuantidade;
+    }
+
+    // Função para confirmar adição ao carrinho
+    async function confirmarAdicaoCarrinho() {
+        try {
+            const {id, nome, preco} = window.produtoCarrinho;
+            const quantidade = parseInt(document.getElementById('quantidadeCarrinho').value);
+
+            // Preparar dados para enviar à API conforme AdicionarNoCarrinhoRequest
+            const dadosCarrinho = {
+                produtoId: id,
+                quantidade: quantidade,
+                nomeProduto: nome
+            };
+
+            // Enviar requisição para a API
+            const response = await fetch('http://127.0.0.1:8000/api/v1/carrinho', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dadosCarrinho)
+            });
+
+            const resultado = await response.json();
+
+            if (resultado.erro) {
+                // Exibir erro no modal
+                const erroCarrinho = document.getElementById('erroCarrinho');
+                erroCarrinho.textContent = resultado.mensagem || 'Erro ao adicionar produto ao carrinho';
+                erroCarrinho.classList.remove('d-none');
+                return;
+            }
+
+            // Verificar se o produto já está no carrinho
+            const produtoExistente = carrinho.find(item => item.id === id);
+
+            carrinho.push({
+                id,
+                nome,
+                preco,
+                quantidade
+            });
+
+            // Fechar modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('modalCarrinho'));
+            modal.hide();
+
+            // Atualizar visualização do carrinho
+            atualizarCarrinho();
+
+            alert('Produto adicionado ao carrinho com sucesso!');
+        } catch (erro) {
+            console.error('Erro ao adicionar produto ao carrinho:', erro);
+            const erroCarrinho = document.getElementById('erroCarrinho');
+            erroCarrinho.textContent = 'Erro de conexão ao adicionar produto ao carrinho';
+            erroCarrinho.classList.remove('d-none');
+        }
+    }
+
+    // Função para atualizar a visualização do carrinho
+    function atualizarCarrinho() {
+        const conteudoCarrinho = document.getElementById('conteudoCarrinho');
+        const carrinhoVazio = document.getElementById('carrinhoVazio');
+        const itensCarrinho = document.getElementById('itensCarrinho');
+        const rodapeCarrinho = document.getElementById('rodapeCarrinho');
+        const totalCarrinho = document.getElementById('totalCarrinho');
+        const badgeCarrinho = document.getElementById('badgeCarrinho');
+        const btnCarrinhoFlutuante = document.getElementById('btnCarrinhoFlutuante');
+
+        // Limpar conteúdo atual
+        itensCarrinho.innerHTML = '';
+
+
+        if (carrinho.length === 0) {
+            // Exibir mensagem de carrinho vazio
+            carrinhoVazio.classList.remove('d-none');
+            itensCarrinho.classList.add('d-none');
+            rodapeCarrinho.style.display = 'none';
+            badgeCarrinho.textContent = '0';
+            btnCarrinhoFlutuante.style.display = 'none';
+        } else {
+            // Ocultar mensagem de carrinho vazio
+            carrinhoVazio.classList.add('d-none');
+            itensCarrinho.classList.remove('d-none');
+            btnCarrinhoFlutuante.style.display = 'block';
+
+            let total = 0;
+            let nmrItens = 0;
+
+            // Adicionar itens ao carrinho
+            carrinho.forEach(item => {
+                total += item.preco * item.quantidade;
+                nmrItens++;
+
+                const div = document.createElement('div');
+                div.className = 'd-flex justify-content-between align-items-center mb-2';
+                div.innerHTML = `
+                    <div>
+                        <strong>${item.nome}</strong> (R$ ${item.preco.toFixed(2).replace('.', ',')})
+                    </div>
+                    <div>
+                        <span class="badge bg-primary">${item.quantidade}</span>
+                    </div>
+                `;
+                itensCarrinho.appendChild(div);
+            });
+            totalCarrinho.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+            badgeCarrinho.textContent = nmrItens;
         }
     }
 </script>
