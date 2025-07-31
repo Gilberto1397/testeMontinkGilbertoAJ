@@ -16,3 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/novo-cupom', function () {
     return view('novo-cupom');
 })->name('novo-cupom');
+
+Route::get('/novo-produto', function () {
+    return view('novo-produto');
+})->name('novo-cupom');

@@ -164,7 +164,7 @@
             const response = await fetch('http://127.0.0.1:8000/api/v1/cupons', opcoes);
             const resultado = await response.json();
 
-            if (resultado.error) {
+            if (resultado.erro) {
                 if (resultado.mensagens) {
                     exibirErroInput(resultado.mensagens);
                     return;

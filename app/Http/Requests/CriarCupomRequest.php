@@ -81,7 +81,7 @@ class CriarCupomRequest extends FormRequest
     {
         $data = [
             'mensagens' => $validator->errors()->getMessages(),
-            'error' => true
+            'erro' => true
         ];
 
         throw new ValidationException($validator, new Response($data, 406));
