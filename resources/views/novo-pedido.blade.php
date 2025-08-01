@@ -72,6 +72,45 @@
                         </form>
                     </div>
                 </div>
+
+                <!-- Card de Valores do Pedido -->
+                <div class="card mt-4" id="cardValores" style="display: none;">
+                    <div class="card-header">
+                        <h4 class="mb-0"><i class="fas fa-shopping-cart me-2"></i>Resumo do Pedido</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="frete" class="form-label">Valor do Frete</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">R$</span>
+                                    <input type="text" class="form-control" id="frete" name="frete" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="valorTotalPedido" class="form-label">Valor Total do Pedido</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">R$</span>
+                                    <input type="text" class="form-control" id="valorTotalPedido" name="valorTotalPedido" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div id="loadingValores" class="text-center" style="display: none;">
+                                    <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
+                                        <span class="visually-hidden">Carregando valores...</span>
+                                    </div>
+                                    <small class="text-muted">Calculando valores do pedido...</small>
+                                </div>
+                                <div id="erroValores" class="alert alert-warning" style="display: none;">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    <span id="mensagemErroValores"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -139,13 +178,14 @@
 
                         if (data.data && !data.data.erro) {
                             preencherEndereco(data.data);
+                            // Buscar valores do pedido após preencher o endereço
+                            buscarValoresPedido();
                         } else {
                             mostrarErro('CEP não encontrado');
                         }
                     })
                     .catch(error => {
                         loadingModal.hide();
-                        console.error('Erro:', error);
                         mostrarErro('Erro ao buscar CEP. Tente novamente.');
                     });
             }
@@ -158,6 +198,62 @@
 
                 // Foca no campo número após preencher
                 document.getElementById('numero').focus();
+            }
+
+            function buscarValoresPedido() {
+                const cardValores = document.getElementById('cardValores');
+                const loadingValores = document.getElementById('loadingValores');
+                const erroValores = document.getElementById('erroValores');
+
+                // Mostrar o card de valores
+                cardValores.style.display = 'block';
+                loadingValores.style.display = 'block';
+                erroValores.style.display = 'none';
+
+                fetch('/api/v1/pedidos/valores-pedido')
+                    .then(response => response.json())
+                    .then(data => {
+                        loadingValores.style.display = 'none';
+
+                        if (data.erro) {
+                            mostrarErroValores(data.mensagem || 'Erro ao carregar valores do pedido');
+                            return;
+                        }
+
+                        if (data.data) {
+                            preencherValoresPedido(data.data);
+                        } else {
+                            mostrarErroValores('Dados de valores não encontrados');
+                        }
+                    })
+                    .catch(error => {
+                        loadingValores.style.display = 'none';
+                        mostrarErroValores('Erro ao carregar valores do pedido. Tente novamente.');
+                    });
+            }
+
+            function preencherValoresPedido(valores) {
+                const freteInput = document.getElementById('frete');
+                const valorTotalInput = document.getElementById('valorTotalPedido');
+
+                // Formatar valores para exibição
+                freteInput.value = formatarMoeda(valores.frete || 0);
+                valorTotalInput.value = formatarMoeda(valores.valorTotalPedido || 0);
+            }
+
+            function mostrarErroValores(mensagem) {
+                const erroValores = document.getElementById('erroValores');
+                const mensagemErroValores = document.getElementById('mensagemErroValores');
+
+                mensagemErroValores.textContent = mensagem;
+                erroValores.style.display = 'block';
+            }
+
+            function formatarMoeda(valor) {
+                return Number(valor).toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
             }
 
             function mostrarErro(mensagem) {
