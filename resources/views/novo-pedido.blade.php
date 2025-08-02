@@ -109,6 +109,36 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Botão de Confirmar Pedido -->
+                        <div class="row mt-3">
+                            <div class="col-12 d-grid">
+                                <button type="button" class="btn btn-success btn-lg" id="btnConfirmarPedido">
+                                    <i class="fas fa-check-circle me-2"></i>
+                                    Confirmar Pedido
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Feedback do pedido -->
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <div id="loadingPedido" class="text-center" style="display: none;">
+                                    <div class="spinner-border spinner-border-sm text-success me-2" role="status">
+                                        <span class="visually-hidden">Criando pedido...</span>
+                                    </div>
+                                    <small class="text-muted">Criando seu pedido...</small>
+                                </div>
+                                <div id="sucessoPedido" class="alert alert-success" style="display: none;">
+                                    <i class="fas fa-check-circle me-2"></i>
+                                    <span id="mensagemSucessoPedido"></span>
+                                </div>
+                                <div id="erroPedido" class="alert alert-danger" style="display: none;">
+                                    <i class="fas fa-exclamation-circle me-2"></i>
+                                    <span id="mensagemErroPedido"></span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -274,6 +304,71 @@
                 cepError.style.display = 'none';
             }
 
+            // Confirmar pedido
+            document.getElementById('btnConfirmarPedido').addEventListener('click', function() {
+                const cep = document.getElementById('cep').value.replace(/\D/g, '');
+                const logradouro = document.getElementById('logradouro').value;
+                const numero = document.getElementById('numero').value;
+                const bairro = document.getElementById('bairro').value;
+                const complemento = document.getElementById('complemento').value;
+                const cidade = document.getElementById('cidade').value;
+                const uf = document.getElementById('uf').value;
+
+                // Validações simples
+                if (!cep || !logradouro || !numero || !bairro || !cidade || !uf) {
+                    mostrarErro('Por favor, preencha todos os campos obrigatórios.');
+                    return;
+                }
+
+                confirmarPedido();
+            });
+
+            function confirmarPedido() {
+                // Exibir loading e ocultar mensagens de erro ou sucesso
+                document.getElementById('loadingPedido').style.display = 'block';
+                document.getElementById('erroPedido').style.display = 'none';
+                document.getElementById('sucessoPedido').style.display = 'none';
+                document.getElementById('btnConfirmarPedido').disabled = true;
+
+                fetch('/api/v1/pedidos', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('loadingPedido').style.display = 'none';
+                    document.getElementById('btnConfirmarPedido').disabled = false;
+
+                    if (data.erro) {
+                        // Exibe mensagem de erro
+                        const mensagemErro = data.mensagem || 'Erro ao criar pedido';
+                        document.getElementById('mensagemErroPedido').textContent = mensagemErro;
+                        document.getElementById('erroPedido').style.display = 'block';
+                    } else {
+                        // Exibe mensagem de sucesso
+                        const mensagemSucesso = data.mensagem || 'Pedido criado com sucesso!';
+                        document.getElementById('mensagemSucessoPedido').textContent = mensagemSucesso;
+                        document.getElementById('sucessoPedido').style.display = 'block';
+
+                        // Limpa o formulário após 3 segundos
+                        setTimeout(() => {
+                            document.getElementById('enderecoForm').reset();
+                            document.getElementById('cardValores').style.display = 'none';
+                            document.getElementById('sucessoPedido').style.display = 'none';
+                            limparErros();
+                        }, 3000);
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('loadingPedido').style.display = 'none';
+                    document.getElementById('btnConfirmarPedido').disabled = false;
+                    document.getElementById('mensagemErroPedido').textContent = 'Erro de conexão. Tente novamente.';
+                    document.getElementById('erroPedido').style.display = 'block';
+                });
+            }
+
             // Formulário submit
             document.getElementById('enderecoForm').addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -283,34 +378,5 @@
             });
         });
     </script>
-
-    <style>
-        .spinner-border {
-            width: 2rem;
-            height: 2rem;
-        }
-
-        .card {
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-            border: 1px solid rgba(0, 0, 0, 0.125);
-        }
-
-        .card-header {
-            background-color: #f8f9fa;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.125);
-        }
-
-        .form-label {
-            font-weight: 500;
-        }
-
-        .text-danger {
-            color: #dc3545 !important;
-        }
-
-        .btn {
-            border-radius: 0.375rem;
-        }
-    </style>
 </body>
 </html>
