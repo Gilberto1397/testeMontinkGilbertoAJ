@@ -354,10 +354,7 @@
 
                         // Limpa o formulário após 3 segundos
                         setTimeout(() => {
-                            document.getElementById('enderecoForm').reset();
-                            document.getElementById('cardValores').style.display = 'none';
-                            document.getElementById('sucessoPedido').style.display = 'none';
-                            limparErros();
+                            window.location= '/novo-produto';
                         }, 3000);
                     }
                 })
