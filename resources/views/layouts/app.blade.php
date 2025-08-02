@@ -7,7 +7,7 @@
     <title>@yield('title', 'Sistema de E-commerce')</title>
     <!-- Bootstrap 5 CSS -->
     <link href="{{asset('css/app.css')}}" rel="stylesheet">
-    <!-- Font Awesome para ícones -->
+    <!-- Font Awesome para Ã­cones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Bootstrap 5 JS Bundle com Popper -->
     <script src="{{asset('js/app.js')}}"></script>
@@ -42,18 +42,12 @@
                             Cupons
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('novo-pedido') ? 'active' : '' }}" href="{{ route('novo-pedido') }}">
-                            <i class="fas fa-shopping-cart me-1"></i>
-                            Pedidos
-                        </a>
-                    </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Conteúdo Principal -->
+    <!-- ConteÃºdo Principal -->
     <main>
         @yield('content')
     </main>

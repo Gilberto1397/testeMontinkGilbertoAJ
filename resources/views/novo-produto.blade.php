@@ -75,7 +75,7 @@
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <!-- SeÁ„o de listagem de produtos -->
+            <!-- Se√ß√£o de listagem de produtos -->
             <article class="card border-0 rounded-3 mb-4">
                 <header class="card-header bg-success text-white">
                     <h2 class="h4 mb-0"><i class="fas fa-list me-2"></i>Produtos Cadastrados</h2>
@@ -87,12 +87,12 @@
                                 <thead class="table-dark">
                                 <tr>
                                     <th scope="col">Nome do Produto</th>
-                                    <th scope="col">PreÁo</th>
-                                    <th scope="col">AÁıes</th>
+                                    <th scope="col">Pre√ßo</th>
+                                    <th scope="col">A√ß√µes</th>
                                 </tr>
                                 </thead>
                                 <tbody id="produtosTableBody">
-                                <!-- Os produtos ser„o inseridos aqui -->
+                                <!-- Os produtos ser√£o inseridos aqui -->
                                 </tbody>
                             </table>
                         </div>
@@ -104,7 +104,7 @@
                 </div>
             </article>
 
-            <!-- Formul·rio de criaÁ„o de produto -->
+            <!-- Formul√°rio de cria√ß√£o de produto -->
             <article class="card border-0 rounded-3">
                 <header class="card-header bg-primary text-white">
                     <h1 class="h3 mb-0"><i class="fas fa-box me-2"></i>Criar Novo Produto</h1>
@@ -114,17 +114,17 @@
                         <input id="produtoId" type="hidden">
 
                         <fieldset>
-                            <legend class="visually-hidden">InformaÁıes do Produto</legend>
+                            <legend class="visually-hidden">Informa√ß√µes do Produto</legend>
 
                             <div class="mb-3">
                                 <label for="nome" class="form-label">Nome do Produto</label>
                                 <input type="text" class="form-control" id="nome"
-                                       placeholder="Ex: Camiseta Algod„o">
+                                       placeholder="Ex: Camiseta Algod√£o">
                                 <span id="nomeErro" class="text-danger fw-bold"></span>
                             </div>
 
                             <div class="mb-3">
-                                <label for="preco" class="form-label">PreÁo (R$)</label>
+                                <label for="preco" class="form-label">Pre√ßo (R$)</label>
                                 <div class="input-group">
                                     <span class="input-group-text">R$</span>
                                     <input type="text" class="form-control" id="preco" placeholder="0.00">
@@ -140,15 +140,15 @@
 
                             <div class="mb-4">
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <h3 class="h5">VariaÁıes do Produto</h3>
+                                    <h3 class="h5">Varia√ß√µes do Produto</h3>
                                     <button type="button" id="btnAdicionarVariacao"
                                             class="btn btn-sm btn-outline-primary">
-                                        <i class="fas fa-plus me-1"></i>Adicionar VariaÁ„o
+                                        <i class="fas fa-plus me-1"></i>Adicionar Varia√ß√£o
                                     </button>
                                 </div>
                                 <hr>
                                 <div id="variacoesContainer">
-                                    <!-- As variaÁıes ser„o adicionadas aqui dinamicamente -->
+                                    <!-- As varia√ß√µes ser√£o adicionadas aqui dinamicamente -->
                                 </div>
                             </div>
                         </fieldset>
@@ -160,7 +160,7 @@
                             </button>
                             <button onclick="cancelarEdicao()" type="button" id="btnCancelarEdicao"
                                     class="btn btn-secondary btn-lg d-none">
-                                <i class="fas fa-times me-2"></i>Cancelar EdiÁ„o
+                                <i class="fas fa-times me-2"></i>Cancelar Edi√ß√£o
                             </button>
                         </div>
                     </form>
@@ -170,7 +170,7 @@
     </div>
 </div>
 
-<!-- Modal de confirmaÁ„o para adicionar ao carrinho -->
+<!-- Modal de confirma√ß√£o para adicionar ao carrinho -->
 <div class="modal fade" id="modalCarrinho" tabindex="-1" aria-labelledby="modalCarrinhoLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -225,10 +225,10 @@
     <div class="p-3" id="conteudoCarrinho">
         <div class="text-center py-4" id="carrinhoVazio">
             <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
-            <p class="text-muted">Seu carrinho est· vazio</p>
+            <p class="text-muted">Seu carrinho est√° vazio</p>
         </div>
         <div id="itensCarrinho" class="d-none">
-            <!-- Os itens do carrinho ser„o inseridos aqui -->
+            <!-- Os itens do carrinho ser√£o inseridos aqui -->
         </div>
     </div>
     <div class="p-3 border-top" id="rodapeCarrinho" >
@@ -241,7 +241,7 @@
     </div>
 </div>
 
-<!-- Bot„o flutuante do carrinho -->
+<!-- Bot√£o flutuante do carrinho -->
 <button class="btn btn-success btn-carrinho-flutuante" onclick="abrirCarrinho()" style="display: none;"
         id="btnCarrinhoFlutuante">
     <i class="fas fa-shopping-cart"></i>
@@ -253,15 +253,15 @@
 <script>
     "use strict";
 
-    // Contador para IDs ˙nicos de variaÁıes
+    // Contador para IDs √∫nicos de varia√ß√µes
     let contadorVariacoes = 0;
 
-    // Carregar produtos ao carregar a p·gina
+    // Carregar produtos ao carregar a p√°gina
     document.addEventListener('DOMContentLoaded', function () {
         carregarProdutos();
     });
 
-    // FunÁ„o para carregar produtos
+    // Fun√ß√£o para carregar produtos
     async function carregarProdutos() {
         try {
             const response = await fetch('http://127.0.0.1:8000/api/v1/produtos', {
@@ -307,17 +307,17 @@
         }
     }
 
-    // ValidaÁ„o para campos numÈricos
+    // Valida√ß√£o para campos num√©ricos
     document.querySelectorAll('#preco, #estoque').forEach(campo => {
         campo.addEventListener('keypress', function (e) {
             const char = String.fromCharCode(e.which);
-            // Para o campo preÁo, permite n˙meros e pontos
+            // Para o campo pre√ßo, permite n√∫meros e pontos
             if (this.id === 'preco') {
                 if (!/[0-9\.]/.test(char) || (char === '.' && this.value.includes('.'))) {
                     e.preventDefault();
                 }
             }
-            // Para o campo estoque, permite apenas n˙meros inteiros
+            // Para o campo estoque, permite apenas n√∫meros inteiros
             else if (this.id === 'estoque') {
                 if (!/[0-9]/.test(char)) {
                     e.preventDefault();
@@ -326,25 +326,25 @@
         });
     });
 
-    // Adicionar variaÁ„o
+    // Adicionar varia√ß√£o
     document.querySelector('#btnAdicionarVariacao').addEventListener('click', function () {
         adicionarVariacao();
     });
 
-    // FunÁ„o para adicionar variaÁ„o
+    // Fun√ß√£o para adicionar varia√ß√£o
     function adicionarVariacao() {
         const id = contadorVariacoes++;
         const variacaoHTML = `
             <div class="card mb-3 variacao-item" id="variacao-${id}">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h4 class="h6 mb-0">VariaÁ„o #${id + 1}</h4>
+                        <h4 class="h6 mb-0">Varia√ß√£o #${id + 1}</h4>
                         <button type="button" class="btn btn-sm btn-outline-danger btn-remover-variacao" data-id="${id}">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
                     <div class="mb-3">
-                        <label for="variacao-nome-${id}" class="form-label">Nome da VariaÁ„o</label>
+                        <label for="variacao-nome-${id}" class="form-label">Nome da Varia√ß√£o</label>
                         <input type="text" class="form-control" id="variacao-nome-${id}" placeholder="Ex: Tamanho P">
                         <span id="produtoVariacao.${id}.nome" class="text-danger fw-bold"></span>
                     </div>
@@ -359,7 +359,7 @@
 
         document.querySelector('#variacoesContainer').insertAdjacentHTML('beforeend', variacaoHTML);
 
-        // Adicionar validaÁ„o para o novo campo de estoque
+        // Adicionar valida√ß√£o para o novo campo de estoque
         document.querySelector(`#variacao-estoque-${id}`).addEventListener('keypress', function (e) {
             const char = String.fromCharCode(e.which);
             if (!/[0-9]/.test(char)) {
@@ -367,14 +367,14 @@
             }
         });
 
-        // Adicionar listener para o bot„o de remover
+        // Adicionar listener para o bot√£o de remover
         document.querySelector(`#variacao-${id} .btn-remover-variacao`).addEventListener('click', function () {
             const idVariacao = this.getAttribute('data-id');
             document.querySelector(`#variacao-${idVariacao}`).remove();
         });
     }
 
-    // FunÁ„o para criar produto
+    // Fun√ß√£o para criar produto
     async function criarProduto() {
         try {
             limparMensagensErro();
@@ -383,7 +383,7 @@
             const preco = document.querySelector('#preco').value;
             const estoque = document.querySelector('#estoque').value;
 
-            // Coletar variaÁıes
+            // Coletar varia√ß√µes
             const produtoVariacao = [];
             document.querySelectorAll('.variacao-item').forEach(item => {
                 const id = item.id.split('-')[1];
@@ -437,7 +437,7 @@
             const estoque = document.querySelector('#estoque').value;
             const produtoId = document.querySelector('#produtoId').value;
 
-            // Coletar variaÁıes
+            // Coletar varia√ß√µes
             const produtoVariacao = [];
             document.querySelectorAll('.variacao-item').forEach(item => {
                 const id = item.id.split('-')[1];
@@ -511,41 +511,41 @@
         document.querySelector('#variacoesContainer').innerHTML = '';
         contadorVariacoes = 0;
 
-        // Ocultar bot„o de cancelar ediÁ„o
+        // Ocultar bot√£o de cancelar edi√ß√£o
         document.getElementById('btnCancelarEdicao').classList.add('d-none');
 
-        // Restaurar tÌtulo do formul·rio
+        // Restaurar t√≠tulo do formul√°rio
         document.querySelector('.card-header.bg-primary h1').innerHTML = '<i class="fas fa-box me-2"></i>Criar Novo Produto';
 
-        // Restaurar texto do bot„o para "Criar Produto"
+        // Restaurar texto do bot√£o para "Criar Produto"
         document.querySelector('#btnCriarProduto').innerHTML = '<i class="fas fa-save me-2"></i>Criar Produto';
 
         // Remover ID do produto sendo editado
         document.querySelector('#produtoForm').removeAttribute('data-id');
     }
 
-    // FunÁ„o para editar produto
+    // Fun√ß√£o para editar produto
     async function editarProduto(id, nome, preco) {
-        // Preencher o formul·rio com os dados do produto
+        // Preencher o formul√°rio com os dados do produto
         document.querySelector('#nome').value = nome;
         document.querySelector('#preco').value = preco;
 
-        // Atualizar tÌtulo do formul·rio
+        // Atualizar t√≠tulo do formul√°rio
         document.querySelector('.card-header.bg-primary h1').innerHTML = '<i class="fas fa-box me-2"></i>Editar Produto';
 
-        // Atualizar texto do bot„o para "Salvar AlteraÁıes"
-        document.querySelector('#btnCriarProduto').innerHTML = '<i class="fas fa-save me-2"></i>Salvar AlteraÁıes';
+        // Atualizar texto do bot√£o para "Salvar Altera√ß√µes"
+        document.querySelector('#btnCriarProduto').innerHTML = '<i class="fas fa-save me-2"></i>Salvar Altera√ß√µes';
 
-        // Exibir bot„o de cancelar ediÁ„o
+        // Exibir bot√£o de cancelar edi√ß√£o
         document.getElementById('btnCancelarEdicao').classList.remove('d-none');
 
         // Armazenar ID do produto sendo editado
         document.querySelector('#produtoId').value = id;
     }
 
-    // FunÁ„o para cancelar ediÁ„o
+    // Fun√ß√£o para cancelar edi√ß√£o
     function cancelarEdicao() {
-        if (confirm('Tem certeza que deseja cancelar a ediÁ„o?')) {
+        if (confirm('Tem certeza que deseja cancelar a edi√ß√£o?')) {
             limpaFormulario();
         }
     }
@@ -560,33 +560,33 @@
         }
     }
 
-    // Vari·veis globais para o carrinho
+    // Vari√°veis globais para o carrinho
     let carrinho = [];
     let quantidadeCarrinho = 1;
 
-    // FunÁ„o para abrir o carrinho
+    // Fun√ß√£o para abrir o carrinho
     function abrirCarrinho() {
         document.getElementById('carrinhoLateral').classList.add('aberto');
         document.getElementById('carrinhoOverlay').classList.add('ativo');
 
-        // Atualizar visualizaÁ„o do carrinho
+        // Atualizar visualiza√ß√£o do carrinho
         atualizarCarrinho();
     }
 
-    // FunÁ„o para fechar o carrinho
+    // Fun√ß√£o para fechar o carrinho
     function fecharCarrinho() {
         document.getElementById('carrinhoLateral').classList.remove('aberto');
         document.getElementById('carrinhoOverlay').classList.remove('ativo');
     }
 
-    // FunÁ„o para abrir o modal do carrinho
+    // Fun√ß√£o para abrir o modal do carrinho
     function abrirModalCarrinho(id, nome, preco) {
         document.getElementById('nomeProdutoModal').textContent = nome;
         document.getElementById('precoProdutoModal').textContent = `R$ ${parseFloat(preco).toFixed(2).replace('.', ',')}`;
         document.getElementById('quantidadeCarrinho').value = 1;
         document.getElementById('erroCarrinho').classList.add('d-none');
 
-        // Armazenar informaÁıes do produto no modal
+        // Armazenar informa√ß√µes do produto no modal
         window.produtoCarrinho = {
             id,
             nome,
@@ -598,12 +598,12 @@
         modal.show();
     }
 
-    // FunÁ„o para alterar a quantidade no modal do carrinho
+    // Fun√ß√£o para alterar a quantidade no modal do carrinho
     function alterarQuantidade(delta) {
         const quantidadeInput = document.getElementById('quantidadeCarrinho');
         let novaQuantidade = parseInt(quantidadeInput.value) + delta;
 
-        // Garantir que a quantidade mÌnima seja 1
+        // Garantir que a quantidade m√≠nima seja 1
         if (novaQuantidade < 1) {
             novaQuantidade = 1;
         }
@@ -611,20 +611,20 @@
         quantidadeInput.value = novaQuantidade;
     }
 
-    // FunÁ„o para confirmar adiÁ„o ao carrinho
+    // Fun√ß√£o para confirmar adi√ß√£o ao carrinho
     async function confirmarAdicaoCarrinho() {
         try {
             const {id, nome, preco} = window.produtoCarrinho;
             const quantidade = parseInt(document.getElementById('quantidadeCarrinho').value);
 
-            // Preparar dados para enviar ‡ API conforme AdicionarNoCarrinhoRequest
+            // Preparar dados para enviar √† API conforme AdicionarNoCarrinhoRequest
             const dadosCarrinho = {
                 produtoId: id,
                 quantidade: quantidade,
                 nomeProduto: nome
             };
 
-            // Enviar requisiÁ„o para a API
+            // Enviar requisi√ß√£o para a API
             const response = await fetch('http://127.0.0.1:8000/api/v1/carrinho', {
                 method: 'POST',
                 headers: {
@@ -643,7 +643,7 @@
                 return;
             }
 
-            // Verificar se o produto j· est· no carrinho
+            // Verificar se o produto j√° est√° no carrinho
             const produtoExistente = carrinho.find(item => item.id === id);
 
             carrinho.push({
@@ -657,19 +657,19 @@
             const modal = bootstrap.Modal.getInstance(document.getElementById('modalCarrinho'));
             modal.hide();
 
-            // Atualizar visualizaÁ„o do carrinho
+            // Atualizar visualiza√ß√£o do carrinho
             atualizarCarrinho();
 
             alert('Produto adicionado ao carrinho com sucesso!');
         } catch (erro) {
             console.error('Erro ao adicionar produto ao carrinho:', erro);
             const erroCarrinho = document.getElementById('erroCarrinho');
-            erroCarrinho.textContent = 'Erro de conex„o ao adicionar produto ao carrinho';
+            erroCarrinho.textContent = 'Erro de conex√£o ao adicionar produto ao carrinho';
             erroCarrinho.classList.remove('d-none');
         }
     }
 
-    // FunÁ„o para atualizar a visualizaÁ„o do carrinho
+    // Fun√ß√£o para atualizar a visualiza√ß√£o do carrinho
     function atualizarCarrinho() {
         const conteudoCarrinho = document.getElementById('conteudoCarrinho');
         const carrinhoVazio = document.getElementById('carrinhoVazio');
@@ -679,7 +679,7 @@
         const badgeCarrinho = document.getElementById('badgeCarrinho');
         const btnCarrinhoFlutuante = document.getElementById('btnCarrinhoFlutuante');
 
-        // Limpar conte˙do atual
+        // Limpar conte√∫do atual
         itensCarrinho.innerHTML = '';
 
         if (carrinho.length === 0) {
