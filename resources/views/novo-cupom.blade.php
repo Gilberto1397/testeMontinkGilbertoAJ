@@ -1,89 +1,81 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Novo Cupom</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="{{asset('css/app.css')}}" rel="stylesheet">
-    <!-- Font Awesome para ícones -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Bootstrap 5 JS Bundle com Popper -->
-    <script src="{{asset('js/app.js')}}"></script>
-    <style>
-        .card {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+@extends('layouts.app')
 
-        .form-label {
-            font-weight: 500;
-        }
-    </style>
-</head>
+@section('title', 'Novo Cupom')
 
-<body class="bg-light">
-<main>
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <article class="card border-0 rounded-3">
-                    <header class="card-header bg-primary text-white">
-                        <h1 class="h3 mb-0"><i class="fas fa-tag me-2"></i>Criar Novo Cupom</h1>
-                    </header>
-                    <div class="card-body p-4">
-                        <form id="cupomForm">
-                            <fieldset>
-                                <legend class="visually-hidden">Informações do Cupom</legend>
+@section('styles')
+<style>
+    .card {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
-                                <div class="mb-3">
-                                    <label for="cupomCodigo" class="form-label">Código do Cupom</label>
-                                    <input type="text" class="form-control" id="cupomCodigo"
-                                           placeholder="Ex: VERAO2025">
-                                    <span id="cupomCodigoErro" class="text-danger fw-bold"></span>
-                                </div>
+    .form-label {
+        font-weight: 500;
+    }
+</style>
+@endsection
 
-                                <div class="mb-3">
-                                    <label for="valorMinimo" class="form-label">Valor Mínimo (R$)</label>
+@section('content')
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <article class="card border-0 rounded-3">
+                <header class="card-header bg-primary text-white">
+                    <h1 class="h3 mb-0"><i class="fas fa-tag me-2"></i>Criar Novo Cupom</h1>
+                </header>
+                <div class="card-body p-4">
+                    <form id="cupomForm">
+                        <fieldset>
+                            <legend class="visually-hidden">Informações do Cupom</legend>
 
-                                    <div class="input-group">
-                                        <span class="input-group-text">R$</span>
-                                        <input type="text" class="form-control" id="valorMinimo" placeholder="0.00">
-                                    </div>
-
-                                    <span id="valorMinimoErro" class="text-danger fw-bold"></span>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="valorDesconto" class="form-label">Valor do Desconto (R$)</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">R$</span>
-                                        <input type="text" class="form-control" id="valorDesconto" placeholder="0.00">
-                                    </div>
-
-                                    <span id="valorDescontoErro" class="text-danger fw-bold"></span>
-                                </div>
-
-                                <div class="mb-4">
-                                    <label for="dataExpiracao" class="form-label">Data de Expiração</label>
-                                    <input type="text" class="form-control" id="dataExpiracao" placeholder="DD/MM/AAAA">
-                                    <span id="dataExpiracaoErro" class="text-danger fw-bold"></span>
-                                </div>
-                            </fieldset>
-
-                            <div class="d-grid gap-2">
-                                <button onclick="criarCupom()" type="button" id="btnCriarCupom" class="btn btn-primary btn-lg">
-                                    <i class="fas fa-save me-2"></i>Criar Cupom
-                                </button>
+                            <div class="mb-3">
+                                <label for="cupomCodigo" class="form-label">Código do Cupom</label>
+                                <input type="text" class="form-control" id="cupomCodigo"
+                                       placeholder="Ex: VERAO2025">
+                                <span id="cupomCodigoErro" class="text-danger fw-bold"></span>
                             </div>
-                        </form>
-                    </div>
-                </article>
-            </div>
+
+                            <div class="mb-3">
+                                <label for="valorMinimo" class="form-label">Valor Mínimo (R$)</label>
+
+                                <div class="input-group">
+                                    <span class="input-group-text">R$</span>
+                                    <input type="text" class="form-control" id="valorMinimo" placeholder="0.00">
+                                </div>
+
+                                <span id="valorMinimoErro" class="text-danger fw-bold"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="valorDesconto" class="form-label">Valor do Desconto (R$)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">R$</span>
+                                    <input type="text" class="form-control" id="valorDesconto" placeholder="0.00">
+                                </div>
+
+                                <span id="valorDescontoErro" class="text-danger fw-bold"></span>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="dataExpiracao" class="form-label">Data de Expiração</label>
+                                <input type="text" class="form-control" id="dataExpiracao" placeholder="DD/MM/AAAA">
+                                <span id="dataExpiracaoErro" class="text-danger fw-bold"></span>
+                            </div>
+                        </fieldset>
+
+                        <div class="d-grid gap-2">
+                            <button onclick="criarCupom()" type="button" id="btnCriarCupom" class="btn btn-primary btn-lg">
+                                <i class="fas fa-save me-2"></i>Criar Cupom
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </article>
         </div>
     </div>
-</main>
+</div>
+@endsection
 
+@section('scripts')
 <script>
     "use strict";
 
@@ -205,6 +197,4 @@
         document.getElementById('cupomForm').reset();
     }
 </script>
-
-</body>
-</html>
+@endsection

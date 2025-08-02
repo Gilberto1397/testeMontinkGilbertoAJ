@@ -19,7 +19,7 @@ Route::get('/novo-cupom', function () {
 
 Route::get('/novo-produto', function () {
     return view('novo-produto');
-})->name('novo-cupom');
+})->name('novo-produto');
 
 Route::get('/novo-pedido', function () {
     return view('novo-pedido');
