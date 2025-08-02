@@ -64,7 +64,7 @@ class ProdutoRepositoryEloquent implements ProdutoRepository
      */
     public function atualizarProduto(AtualizarProdutoRequest $request): bool
     {
-        $produto = $this->getProdutosByIds([$request->produtoId]);
+        $produto = $this->getProdutosByIds([$request->produtoId])[0];
         $produto->produtos_nome = $request->nome;
         $produto->produtos_preco = $request->preco;
 

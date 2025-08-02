@@ -18,6 +18,7 @@ class CriarPedidoService
         if (!$pedidoCriado) {
             return new OrganizaRespostaRequisicao(500, 'Erro ao criar pedido');
         }
+        session(['totalPedido' => 0, 'carrinho' => null]);
         return new OrganizaRespostaRequisicao(201, 'Pedido criado com sucesso');
     }
 }

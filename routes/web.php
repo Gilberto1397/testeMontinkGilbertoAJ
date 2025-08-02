@@ -13,6 +13,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/novo-cupom', function () {
+    return view('novo-cupom');
+})->name('novo-cupom');
+
+Route::get('/novo-produto', function () {
+    return view('novo-produto');
+})->name('novo-produto');
+
+Route::get('/novo-pedido', function () {
+    return view('novo-pedido');
+})->name('novo-pedido');

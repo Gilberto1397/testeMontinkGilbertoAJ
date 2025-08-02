@@ -96,8 +96,8 @@ class AtualizarProdutoRequest extends FormRequest
     public function failedValidation(Validator $validator): void
     {
         $data = [
-            'messages' => $validator->errors()->getMessages(),
-            'error' => true
+            'mensagens' => $validator->errors()->getMessages(),
+            'erro' => true
         ];
 
         throw new ValidationException($validator, new Response($data, 406));
