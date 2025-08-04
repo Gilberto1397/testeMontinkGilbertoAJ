@@ -1,5 +1,10 @@
 # Teste empresa Montink
 
+# Aplicação feita com Laravel
+
+- **Versão do Laravel:** 8.x
+- **Versões aceitas do PHP:** ^7.3|^8.0
+
 ## Configuração do Projeto
 
 ### 1. Configuração do arquivo .env
